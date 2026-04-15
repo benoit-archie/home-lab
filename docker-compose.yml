@@ -1,0 +1,16 @@
+services:
+  meal-planner:
+    build:
+      context: .
+      args:
+        VITE_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    container_name: meal-planner
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
