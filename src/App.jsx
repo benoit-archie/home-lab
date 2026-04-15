@@ -437,17 +437,17 @@ Réponds UNIQUEMENT en JSON strict, sans backticks :
 Noms courts (max 5 mots), en français. Le champ "vege" liste les clés "Jour-Repas" végétariens.`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }],
+          model: "mistral",
+          prompt,
+          stream: false,
         }),
       });
       const data = await res.json();
-      const text = data.content?.find(b => b.type === "text")?.text || "";
+      const text = data.response || "";
       const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
       const newMeals = initMeals();
       DAYS.forEach(d => {
@@ -493,17 +493,17 @@ Réponds UNIQUEMENT en JSON strict sans backticks :
 Quantités réalistes pour 4 personnes. Omets les catégories vides.`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          messages: [{ role: "user", content: prompt }],
+          model: "mistral",
+          prompt,
+          stream: false,
         }),
       });
       const data = await res.json();
-      const text = data.content?.find(b => b.type === "text")?.text || "";
+      const text = data.response || "";
       const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
       setShoppingList(parsed.categories.filter(c => c.items?.length > 0));
       setShowShopping(true);
