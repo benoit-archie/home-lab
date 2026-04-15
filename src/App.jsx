@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLang } from "./i18n.js";
 
 function extractJSON(text) {
   const start = text.indexOf("{");
@@ -447,13 +448,13 @@ function Settings({ config, onSave, t }) {
 
   return (
     <div style={{ padding: 24 }}>
-      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>{t.vikunjaTitle}</h3>
-      {field(t.urlLabel, "baseUrl", t.urlPlaceholder)}
-      {field(t.tokenLabel, "token", t.tokenPlaceholder, "password")}
+      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>{t('vikunjaTitle')}</h3>
+      {field(t('urlLabel'), "baseUrl", t('urlPlaceholder'))}
+      {field(t('tokenLabel'), "token", t('tokenPlaceholder'), "password")}
 
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <button style={S.btn("primary")} onClick={fetchProjects} disabled={loading}>
-          {t.connectBtn(loading)}
+          {t('connectBtn', loading)}
         </button>
       </div>
 
@@ -462,7 +463,7 @@ function Settings({ config, onSave, t }) {
       {projects.length > 0 && (
         <div style={{ marginBottom: 16 }}>
           <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666", marginBottom: 6 }}>
-            {t.projectLabel}
+            {t('projectLabel')}
           </label>
           <select
             value={local.projectId || ""}
@@ -473,7 +474,7 @@ function Settings({ config, onSave, t }) {
               fontSize: 13, fontFamily: "inherit", color: "#111", outline: "none",
             }}
           >
-            <option value="">{t.projectPlaceholder}</option>
+            <option value="">{t('projectPlaceholder')}</option>
             {projects.map(p => (
               <option key={p.id} value={p.id}>{p.title}</option>
             ))}
@@ -486,7 +487,7 @@ function Settings({ config, onSave, t }) {
         onClick={() => onSave(local)}
         disabled={!local.baseUrl || !local.token}
       >
-        {t.saveBtn}
+        {t('saveBtn')}
       </button>
     </div>
   );
@@ -528,15 +529,15 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
 
   return (
     <div style={{ padding: 24 }}>
-      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>{t.householdTitle}</h3>
+      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>{t('householdTitle')}</h3>
 
       <div style={{ marginBottom: 24 }}>
-        <label style={labelStyle}>{t.adultsLabel}</label>
+        <label style={labelStyle}>{t('adultsLabel')}</label>
         <Stepper value={adults} min={1} max={8} onDec={() => setAdults(adults - 1)} onInc={() => setAdults(adults + 1)} />
       </div>
 
       <div style={{ marginBottom: children.length > 0 ? 16 : 0 }}>
-        <label style={labelStyle}>{t.childrenLabel}</label>
+        <label style={labelStyle}>{t('childrenLabel')}</label>
         <Stepper value={children.length} min={0} max={8} onDec={() => setChildCount(children.length - 1)} onInc={() => setChildCount(children.length + 1)} />
       </div>
 
@@ -544,7 +545,7 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
           {children.map((child, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 12, color: "#666", minWidth: 68, fontWeight: 600 }}>{t.childLabel(i)}</span>
+              <span style={{ fontSize: 12, color: "#666", minWidth: 68, fontWeight: 600 }}>{t('childLabel', i)}</span>
               <div style={{ display: "flex", gap: 6 }}>
                 {ageRanges.map(r => (
                   <button key={r.value} onClick={() => setChildAge(i, r.value)} style={{
@@ -563,13 +564,13 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
       )}
 
       <div style={{ marginTop: 24 }}>
-        <label style={labelStyle}>{t.scheduleLabel}</label>
+        <label style={labelStyle}>{t('scheduleLabel')}</label>
         <div style={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 12 }}>
             <thead>
               <tr>
                 <th style={{ padding: "4px 8px 8px 0", textAlign: "left", color: "#666", fontWeight: 700, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", minWidth: 60 }}></th>
-                {[t.breakfastHdr, t.lunchHdr, t.dinnerHdr].map(h => (
+                {[t('breakfastHdr'), t('lunchHdr'), t('dinnerHdr')].map(h => (
                   <th key={h} style={{ padding: "4px 12px 8px", textAlign: "center", color: "#666", fontWeight: 700, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
@@ -594,17 +595,17 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
           </table>
         </div>
         <p style={{ margin: "8px 0 0", fontSize: 11, color: "#999" }}>
-          {t.breakfastNote}
+          {t('breakfastNote')}
         </p>
       </div>
 
       {/* DIET BREAKDOWN */}
       <div style={{ marginTop: 24 }}>
-        <label style={labelStyle}>{t.dietTitle}</label>
+        <label style={labelStyle}>{t('dietTitle')}</label>
         {[
-          { key: "vegan",       label: t.veganPct,  color: "#6ee7b7", auto: false },
-          { key: "vegetarian",  label: t.vegePct,   color: "#3d9970", auto: false },
-          { key: "meat",        label: t.meatPct,   color: "#e85d4a", auto: true  },
+          { key: "vegan",       label: t('veganPct'),  color: "#6ee7b7", auto: false },
+          { key: "vegetarian",  label: t('vegePct'),   color: "#3d9970", auto: false },
+          { key: "meat",        label: t('meatPct'),   color: "#e85d4a", auto: true  },
         ].map(({ key, label, color, auto }) => {
           const val = dietPrefs[key];
           const max = key === "vegan"
@@ -623,7 +624,7 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
                   <span style={{ fontSize: 13, fontWeight: 700, color: val < 0 ? "#e85d4a" : "#111", minWidth: 38, textAlign: "right" }}>
                     {val < 0 ? "!" : `${val}%`}
                   </span>
-                  <span style={{ fontSize: 10, color: "#999", fontStyle: "italic" }}>{t.meatAuto}</span>
+                  <span style={{ fontSize: 10, color: "#999", fontStyle: "italic" }}>{t('meatAuto')}</span>
                 </div>
               ) : (
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 10 }}>
@@ -647,11 +648,11 @@ function HouseholdSettings({ household, onChange, daysShort, ageRanges, househol
         {dietPrefs.meat < 0 && (
           <p style={{ margin: "4px 0 0", fontSize: 11, color: "#e85d4a" }}>Vegan + vegetarian &gt; 100%</p>
         )}
-        <p style={{ margin: "8px 0 0", fontSize: 11, color: "#999" }}>{t.dietNote}</p>
+        <p style={{ margin: "8px 0 0", fontSize: 11, color: "#999" }}>{t('dietNote')}</p>
       </div>
 
       <div style={{ marginTop: 20, padding: "10px 14px", borderRadius: 8, background: "#f5f5f5", fontSize: 12, color: "#666" }}>
-        {t.householdTotal(adults + children.length, householdDesc({ adults, children }, ageRanges))}
+        {t('householdTotal', adults + children.length, householdDesc({ adults, children }, ageRanges))}
       </div>
     </div>
   );
@@ -697,12 +698,12 @@ function MealCell({ value, onChange, dietType, t }) {
             width: "100%", background: "transparent", border: "none",
             outline: "none", fontSize: 13, fontFamily: "inherit", color: "#111",
           }}
-          placeholder={t.mealPlaceholder}
+          placeholder={t('mealPlaceholder')}
         />
       ) : (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <span style={{ fontSize: 13, color: value ? "#111" : "#bbb", fontStyle: value ? "normal" : "italic", lineHeight: 1.4 }}>
-            {value || t.undefined}
+            {value || t('undefined')}
           </span>
           {value && (
             <span style={{
@@ -710,7 +711,7 @@ function MealCell({ value, onChange, dietType, t }) {
               background: dietType === "vegan" ? "#d1fae5" : dietType === "vege" ? "#dcfce7" : "#fef3c7",
               color: dietType === "vegan" ? "#065f46" : dietType === "vege" ? "#166534" : "#92400e",
             }}>
-              {dietType === "vegan" ? t.veganLabel : dietType === "vege" ? t.vegeLabel : t.meatLabel}
+              {dietType === "vegan" ? t('veganLabel') : dietType === "vege" ? t('vegeLabel') : t('meatLabel')}
             </span>
           )}
         </div>
@@ -722,15 +723,15 @@ function MealCell({ value, onChange, dietType, t }) {
 // ─── RECIPE MODAL ────────────────────────────────────────────────────────────
 function RecipeModal({ mealName, recipe, loading, error, onClose, t }) {
   return (
-    <div style={{
+    <div className="modal-overlay" style={{
       position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
       backdropFilter: "blur(6px)", zIndex: 200,
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
     }}>
-      <div style={{ ...S.card, maxWidth: 580, width: "100%", maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
+      <div className="modal-sheet" style={{ ...S.card, maxWidth: 580, width: "100%", maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "18px 24px", borderBottom: "1px solid #e5e5e5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <h2 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: 20 }}>{t.recipeTitle}</h2>
+            <h2 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: 20 }}>{t('recipeTitle')}</h2>
             <p style={{ margin: "2px 0 0", fontSize: 13, color: "#666" }}>{mealName}</p>
           </div>
           <button style={{ ...S.btn(), color: "#666", border: "1px solid #e5e5e5" }} onClick={onClose}>✕</button>
@@ -739,30 +740,30 @@ function RecipeModal({ mealName, recipe, loading, error, onClose, t }) {
           {loading && (
             <div style={{ textAlign: "center", padding: "40px 0", color: "#999" }}>
               <div style={{ fontSize: 32, marginBottom: 12, display: "inline-block", animation: "spin 1s linear infinite" }}>⟳</div>
-              <p style={{ margin: 0, fontSize: 14 }}>{t.recipeLoading}</p>
+              <p style={{ margin: 0, fontSize: 14 }}>{t('recipeLoading')}</p>
             </div>
           )}
-          {error && <p style={{ color: "#991b1b", fontSize: 14 }}>{t.recipeError}</p>}
+          {error && <p style={{ color: "#991b1b", fontSize: 14 }}>{t('recipeError')}</p>}
           {recipe && !loading && (
             <>
               <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 12, background: "#f5f5f5", padding: "4px 10px", borderRadius: 99, color: "#666" }}>
-                  👤 {recipe.servings} {t.servingsLabel}
+                  👤 {recipe.servings} {t('servingsLabel')}
                 </span>
                 {recipe.prepTime && (
                   <span style={{ fontSize: 12, background: "#f5f5f5", padding: "4px 10px", borderRadius: 99, color: "#666" }}>
-                    ⏱ {t.prepLabel} : {recipe.prepTime}
+                    ⏱ {t('prepLabel')} : {recipe.prepTime}
                   </span>
                 )}
                 {recipe.cookTime && (
                   <span style={{ fontSize: 12, background: "#f5f5f5", padding: "4px 10px", borderRadius: 99, color: "#666" }}>
-                    🍳 {t.cookLabel} : {recipe.cookTime}
+                    🍳 {t('cookLabel')} : {recipe.cookTime}
                   </span>
                 )}
               </div>
 
               <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666" }}>
-                {t.ingredientsLabel}
+                {t('ingredientsLabel')}
               </h3>
               <ul style={{ margin: "0 0 24px", padding: 0, listStyle: "none" }}>
                 {recipe.ingredients.map((ing, i) => (
@@ -777,7 +778,7 @@ function RecipeModal({ mealName, recipe, loading, error, onClose, t }) {
               </ul>
 
               <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666" }}>
-                {t.stepsLabel}
+                {t('stepsLabel')}
               </h3>
               <ol style={{ margin: 0, padding: "0 0 0 20px" }}>
                 {recipe.steps.map((step, i) => (
@@ -801,7 +802,7 @@ function PushModal({ config, shoppingList, weekLabel, onClose, t }) {
   const [count, setCount] = useState(0);
 
   const push = async () => {
-    if (!config.projectId) { setMsg(t.noProject); setStatus("error"); return; }
+    if (!config.projectId) { setMsg(t('noProject')); setStatus("error"); return; }
     setStatus("pushing"); setMsg(""); setCount(0);
     try {
       const total = shoppingList.reduce((a, c) => a + c.items.length, 0);
@@ -810,14 +811,14 @@ function PushModal({ config, shoppingList, weekLabel, onClose, t }) {
         for (const item of cat.items) {
           await vikunjaFetch(config.baseUrl.replace(/\/$/, ""), config.token, `/projects/${config.projectId}/tasks`, "PUT", {
             title: `${item.name} — ${item.qty}`,
-            description: `${t.taskCategory(cat.name, cat.emoji)}\n${t.taskWeek(weekLabel)}`,
+            description: `${t('taskCategory', cat.name, cat.emoji)}\n${t('taskWeek', weekLabel)}`,
           });
           done++;
           setCount(done);
         }
       }
       setStatus("done");
-      setMsg(t.tasksDone(done, config.projectName || ""));
+      setMsg(t('tasksDone', done, config.projectName || ""));
     } catch (e) {
       setStatus("error");
       setMsg(e.message);
@@ -838,7 +839,7 @@ function PushModal({ config, shoppingList, weekLabel, onClose, t }) {
         {status === "pushing" && (
           <>
             <div style={{ fontSize: 40, marginBottom: 16, animation: "spin 1s linear infinite", display: "inline-block" }}>⟳</div>
-            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t.pushing}</h3>
+            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t('pushing')}</h3>
             <p style={{ color: "#666", fontSize: 14 }}>{count} / {total}</p>
             <div style={{ marginTop: 16, height: 4, background: "#e5e5e5", borderRadius: 99, overflow: "hidden" }}>
               <div style={{ width: `${(count / total) * 100}%`, height: "100%", background: "#6366f1", transition: "width 0.3s", borderRadius: 99 }} />
@@ -848,17 +849,17 @@ function PushModal({ config, shoppingList, weekLabel, onClose, t }) {
         {status === "done" && (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
-            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t.doneTitle}</h3>
+            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t('doneTitle')}</h3>
             <p style={{ color: "#666", fontSize: 14, marginBottom: 20 }}>{msg}</p>
-            <button style={S.btn("primary")} onClick={onClose}>{t.closeBtn}</button>
+            <button style={S.btn("primary")} onClick={onClose}>{t('closeBtn')}</button>
           </>
         )}
         {status === "error" && (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
-            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t.errorTitle}</h3>
+            <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>{t('errorTitle')}</h3>
             <p style={{ color: "#991b1b", fontSize: 13, marginBottom: 20, wordBreak: "break-all" }}>{msg}</p>
-            <button style={S.btn()} onClick={onClose}>{t.closeBtn}</button>
+            <button style={S.btn()} onClick={onClose}>{t('closeBtn')}</button>
           </>
         )}
       </div>
@@ -870,30 +871,30 @@ function PushModal({ config, shoppingList, weekLabel, onClose, t }) {
 // ─── SHOPPING PREVIEW ─────────────────────────────────────────────────────────
 function ShoppingPreview({ list, onPush, onClose, canPush, t }) {
   return (
-    <div style={{
+    <div className="modal-overlay" style={{
       position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
       backdropFilter: "blur(6px)", zIndex: 150,
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
     }}>
-      <div style={{ ...S.card, maxWidth: 680, width: "100%", maxHeight: "88vh", display: "flex", flexDirection: "column" }}>
+      <div className="modal-sheet" style={{ ...S.card, maxWidth: 680, width: "100%", maxHeight: "88vh", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "20px 24px", borderBottom: "1px solid #e5e5e5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <h2 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: 22 }}>{t.shoppingTitle}</h2>
+            <h2 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: 22 }}>{t('shoppingTitle')}</h2>
             <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-              {t.ingredientCount(list.reduce((a, c) => a + c.items.length, 0), list.length)}
+              {t('ingredientCount', list.reduce((a, c) => a + c.items.length, 0), list.length)}
             </p>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             {canPush && (
               <button style={S.btn("green")} onClick={onPush}>
-                {t.sendVikunja}
+                {t('sendVikunja')}
               </button>
             )}
             <button style={{ ...S.btn(), color: "#666", border: "1px solid #e5e5e5" }} onClick={onClose}>✕</button>
           </div>
         </div>
         <div style={{ overflowY: "auto", padding: 24 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="shopping-grid">
             {list.map(cat => (
               <div key={cat.name} style={{ ...S.card, padding: "14px 16px" }}>
                 <h4 style={{ margin: "0 0 10px", fontSize: 12, color: "#666", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -922,24 +923,30 @@ function ShoppingPreview({ list, onPush, onClose, canPush, t }) {
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
-function Sidebar({ tab, setTab, lang, setLang, onShopping, filledCount, shoppingList, onSync }) {
+function Sidebar({ tab, setTab, lang, setLang, onShopping, filledCount, shoppingList, onSync, onGenerate, genLoading, onClear, t }) {
   const items = [
-    { id: "plan",      emoji: "🗓",  label: "Planning",   action: () => setTab("plan") },
-    { id: "household", emoji: "👨‍👩‍👧", label: "Famille",    action: () => setTab("household") },
-    { id: "shopping",  emoji: "🛒",  label: "Courses",    action: onShopping, disabled: filledCount === 0 },
-    { id: "sync",      emoji: "🔗",  label: "Sync",       action: onSync },
-    { id: "lang",      emoji: "🌍",  label: "Langue",     action: () => {
+    { id: "plan",      emoji: "🗓",  label: t('navPlan'),      action: () => setTab("plan") },
+    { id: "household", emoji: "👨‍👩‍👧", label: t('navHousehold'), action: () => setTab("household") },
+    { id: "shopping",  emoji: "🛒",  label: t('navShopping'),  action: onShopping, shopping: true },
+    { id: "sync",      emoji: "🔗",  label: t('navSync'),      action: onSync },
+    { id: "lang",      emoji: "🌍",  label: t('navLang'),      action: () => {
       const keys = Object.keys(LANGS);
       setLang(keys[(keys.indexOf(lang) + 1) % keys.length]);
     }},
-    { id: "settings",  emoji: "⚙",   label: "Paramètres", action: () => setTab("settings") },
+    { id: "settings",  emoji: "⚙",   label: t('navSettings'), action: () => setTab("settings") },
   ];
   return (
     <nav className="sidebar">
       {items.map(item => (
         <button
           key={item.id}
-          className={`sidebar-item${tab === item.id ? " active" : ""}${item.disabled ? " disabled" : ""}`}
+          className={[
+            "sidebar-item",
+            tab === item.id ? "active" : "",
+            item.disabled ? "disabled" : "",
+            item.shopping ? "shopping" : "",
+            item.shopping && filledCount === 0 ? "shopping-empty" : "",
+          ].filter(Boolean).join(" ")}
           onClick={item.disabled ? undefined : item.action}
           title={item.label}
           disabled={item.disabled}
@@ -948,6 +955,30 @@ function Sidebar({ tab, setTab, lang, setLang, onShopping, filledCount, shopping
           <span className="sidebar-label">{item.label}</span>
         </button>
       ))}
+      <div style={{ flex: 1 }} />
+      <div className="sidebar-bottom">
+        <button
+          className="sidebar-generate"
+          onClick={onGenerate}
+          disabled={genLoading}
+          title={t('generateBtn')}
+        >
+          <span className="sidebar-bottom-icon">
+            {genLoading
+              ? <span style={{ display: "inline-block", animation: "spin 0.8s linear infinite" }}>⟳</span>
+              : "✦"}
+          </span>
+          <span className="sidebar-bottom-label">{t('generateBtn')}</span>
+        </button>
+        <button
+          className="sidebar-clear"
+          onClick={onClear}
+          title={t('clearBtn')}
+        >
+          <span className="sidebar-bottom-icon">🗑</span>
+          <span className="sidebar-bottom-label">{t('clearBtn')}</span>
+        </button>
+      </div>
     </nav>
   );
 }
@@ -961,9 +992,8 @@ export default function App() {
     catch { return defaultHousehold; }
   });
   const [tab, setTab] = useState("plan");
-  const [lang, setLang] = useState(() => localStorage.getItem("meal-planner-lang") || "en");
-  const L = LANGS[lang];
-  const t = L.ui;
+  const { lang, setLang, t } = useLang();
+  const L = LANGS[lang] || LANGS.fr;
   const [dietPrefs, setDietPrefs] = useState(() => {
     try { return JSON.parse(localStorage.getItem("meal-planner-diet")) || { vegan: 0, vegetarian: 50, meat: 50 }; }
     catch { return { vegan: 0, vegetarian: 50, meat: 50 }; }
@@ -972,9 +1002,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("meal-planner-household", JSON.stringify(household));
   }, [household]);
-  useEffect(() => {
-    localStorage.setItem("meal-planner-lang", lang);
-  }, [lang]);
   useEffect(() => {
     localStorage.setItem("meal-planner-diet", JSON.stringify(dietPrefs));
   }, [dietPrefs]);
@@ -989,7 +1016,7 @@ export default function App() {
   const [recipeModal, setRecipeModal] = useState(null); // { mealName }
   const [recipeData, setRecipeData] = useState({ loading: false, error: false, recipe: null });
 
-  const weekLabel = new Date().toLocaleDateString(t.weekLocale, { day: "numeric", month: "long", year: "numeric" });
+  const weekLabel = new Date().toLocaleDateString(t('weekLocale'), { day: "numeric", month: "long", year: "numeric" });
 
   const setMeal = (day, type, val) =>
     setMeals(p => ({ ...p, [day]: { ...p[day], [type]: val } }));
@@ -1057,7 +1084,7 @@ ${L.mealPromptInstruction}`;
       (parsed.vege || []).forEach(k => { flags[k] = veganSet.has(k) ? "vegan" : "vege"; });
       setVegeFlags(flags);
     } catch (e) {
-      setGenError(t.aiError + e.message);
+      setGenError(t('aiError') + e.message);
     } finally {
       setGenLoading(false);
     }
@@ -1093,7 +1120,7 @@ Omit empty categories.`;
       setShoppingList(parsed.categories.filter(c => c.items?.length > 0));
       setShowShopping(true);
     } catch (e) {
-      alert(t.shoppingError + e.message);
+      alert(t('shoppingError') + e.message);
     } finally {
       setListLoading(false);
     }
@@ -1122,8 +1149,8 @@ Omit empty categories.`;
   // Meal type label helper
   const mealTypeLabel = (type, short = false) =>
     type === "Déjeuner"
-      ? (short ? t.lunchShort : t.lunch)
-      : (short ? t.dinnerShort : t.dinner);
+      ? (short ? t('lunchShort') : t('lunch'))
+      : (short ? t('dinnerShort') : t('dinner'));
   const mealTypeIcon = type => type === "Déjeuner" ? "☀" : "🌙";
 
   return (
@@ -1136,37 +1163,89 @@ Omit empty categories.`;
         button:hover { opacity: 0.85; }
         input:focus, select:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
         .sidebar {
-          position: fixed; left: 0; top: 0; bottom: 0; width: 60px;
+          position: fixed; left: 0; top: 0; bottom: 0; width: 48px;
           background: #111111; display: flex; flex-direction: column;
           padding: 16px 0; z-index: 200; overflow: hidden;
           transition: width 0.2s ease;
           border-right: 1px solid rgba(99,102,241,0.1);
         }
-        .sidebar:hover { width: 220px; }
+        .sidebar:hover { width: 200px; }
         .sidebar-item {
-          display: flex; align-items: center; gap: 14px;
-          padding: 13px 18px; border: none; background: transparent;
-          color: #9ca3af; cursor: pointer; font-family: inherit;
+          display: flex; align-items: center; gap: 12px;
+          padding: 11px 12px; border: none; background: transparent;
+          color: #888; cursor: pointer; font-family: inherit;
           font-size: 13px; font-weight: 500; white-space: nowrap;
           transition: background 0.2s, color 0.2s; width: 100%; text-align: left;
         }
-        .sidebar-item:hover { background: rgba(99,102,241,0.12); color: #a5b4fc; opacity: 1; }
-        .sidebar-item.active { background: rgba(99,102,241,0.2); color: #6366f1; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.05); color: #ccc; opacity: 1; }
+        .sidebar-item.active { background: #1f1f1f; color: #fff; }
         .sidebar-item.disabled { opacity: 0.35; cursor: not-allowed; }
-        .sidebar-emoji { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
-        .sidebar-label { opacity: 0; transition: opacity 0.15s; }
+        .sidebar-item.shopping { color: #6366f1; }
+        .sidebar-item.shopping:hover { color: #818cf8; }
+        .sidebar-item.shopping-empty { opacity: 0.4; }
+        .sidebar-emoji { font-size: 17px; flex-shrink: 0; width: 24px; text-align: center; }
+        .sidebar-label { opacity: 0; transition: opacity 0.15s; white-space: nowrap; overflow: hidden; }
         .sidebar:hover .sidebar-label { opacity: 1; }
-        .main-content { margin-left: 60px; }
+        .sidebar-bottom { padding: 8px 8px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; gap: 6px; }
+        .sidebar-generate {
+          display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 6px;
+          border: none; background: #6366f1; color: #fff; cursor: pointer; font-family: inherit;
+          font-size: 12px; font-weight: 600; white-space: nowrap; width: 100%; text-align: left;
+          transition: background 0.2s; overflow: hidden;
+        }
+        .sidebar-generate:hover { background: #4f46e5; opacity: 1; }
+        .sidebar-generate:disabled { opacity: 0.45; cursor: not-allowed; }
+        .sidebar-clear {
+          display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 6px;
+          border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #888;
+          cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500;
+          white-space: nowrap; width: 100%; text-align: left; transition: background 0.2s, color 0.2s; overflow: hidden;
+        }
+        .sidebar-clear:hover { background: rgba(255,255,255,0.05); color: #ccc; opacity: 1; }
+        .sidebar-bottom-icon { font-size: 14px; flex-shrink: 0; width: 22px; text-align: center; }
+        .sidebar-bottom-label { opacity: 0; transition: opacity 0.15s; white-space: nowrap; }
+        .sidebar:hover .sidebar-bottom-label { opacity: 1; }
+        .main-content { margin-left: 48px; transition: margin-left 0.2s ease; }
+        .sidebar:hover ~ .main-content { margin-left: 200px; }
+        .page-title { padding: 24px 32px 16px; border-bottom: 1px solid #e5e5e5; background: #fff; }
+        .progress-bar-wrap { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 8px 32px; }
+        .main-pad { max-width: 900px; margin: 0 auto; padding: 24px 24px 48px; }
+        .day-grid { display: grid; gap: 16px; padding: 20px; }
+        .shopping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .mobile-generate { display: none; }
         @media (max-width: 640px) {
           .sidebar {
             position: fixed; top: auto; left: 0; right: 0; bottom: 0;
-            width: 100% !important; height: 60px; flex-direction: row;
-            padding: 0; border-right: none; border-top: 1px solid rgba(99,102,241,0.15);
+            width: 100% !important; height: 56px; flex-direction: row;
+            padding: 0; border-right: none; border-top: 1px solid rgba(255,255,255,0.08);
+            transition: none;
           }
           .sidebar:hover { width: 100% !important; }
-          .sidebar-item { flex-direction: column; gap: 3px; padding: 6px 4px; flex: 1; justify-content: center; align-items: center; font-size: 10px; }
+          .sidebar-item {
+            flex-direction: column; gap: 2px; padding: 6px 2px; flex: 1;
+            justify-content: center; align-items: center; font-size: 9px;
+          }
           .sidebar-label { opacity: 1; font-size: 9px; }
-          .main-content { margin-left: 0 !important; padding-bottom: 60px; }
+          .sidebar-emoji { font-size: 18px; width: auto; }
+          .sidebar-bottom { display: none; }
+          .main-content { margin-left: 0 !important; padding-bottom: 56px; transition: none; }
+          .sidebar:hover ~ .main-content { margin-left: 0 !important; }
+          .page-title { padding: 14px 16px 12px; }
+          .page-title h1 { font-size: 18px !important; }
+          .progress-bar-wrap { padding: 6px 16px; }
+          .main-pad { padding: 12px 12px 72px; }
+          .day-grid { grid-template-columns: 1fr !important; padding: 12px; gap: 12px; }
+          .shopping-grid { grid-template-columns: 1fr; }
+          .mobile-generate {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 0 4px;
+          }
+          .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
+          .modal-sheet {
+            max-width: 100% !important; max-height: 92vh !important;
+            border-radius: 16px 16px 0 0 !important;
+            width: 100% !important;
+          }
         }
       `}</style>
 
@@ -1179,65 +1258,21 @@ Omit empty categories.`;
         filledCount={filledCount}
         shoppingList={shoppingList}
         onSync={() => shoppingList ? setShowPush(true) : setTab("settings")}
+        onGenerate={generateMeals}
+        genLoading={genLoading}
+        onClear={() => setMeals(initMeals())}
+        t={t}
       />
       <div className="main-content">
 
-      {/* HEADER */}
-      <div style={S.header}>
-        <div>
-          <h1 style={S.logo}>{t.appTitle}</h1>
-          <p style={{ ...S.sub, color: "#999" }}>
-            {L.householdDesc(household, L.ageRanges)} · {weekLabel}
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <button style={S.btn("primary")} onClick={generateMeals} disabled={genLoading}>
-            {genLoading
-              ? <span style={{ display: "inline-block", animation: "spin 0.8s linear infinite" }}>⟳</span>
-              : t.generateBtn}
-          </button>
-          <button style={S.btn()} onClick={() => setMeals(initMeals())}>
-            {t.clearBtn}
-          </button>
-          <button
-            style={{ ...S.btn("green"), opacity: filledCount === 0 ? 0.4 : 1 }}
-            onClick={generateShopping}
-            disabled={filledCount === 0 || listLoading}
-          >
-            {listLoading ? "⟳…" : t.shoppingBtn}
-          </button>
-          <button
-            style={{ ...S.btn(), borderColor: tab === "household" ? "#a5b4fc" : undefined, color: tab === "household" ? "#a5b4fc" : undefined }}
-            onClick={() => setTab(tp => tp === "household" ? "plan" : "household")}
-          >
-            {t.paramBtn}
-          </button>
-          <button
-            style={{ ...S.btn(), borderColor: tab === "settings" ? "#a5b4fc" : undefined, color: tab === "settings" ? "#a5b4fc" : undefined }}
-            onClick={() => setTab(tp => tp === "settings" ? "plan" : "settings")}
-          >
-            ⚙ Vikunja {configOk ? "✓" : ""}
-          </button>
-          <div style={{ display: "flex", gap: 2, marginLeft: 4 }}>
-            {Object.entries(LANGS).map(([key, l]) => (
-              <button
-                key={key}
-                onClick={() => setLang(key)}
-                style={{
-                  padding: "4px 10px", borderRadius: 6, cursor: "pointer",
-                  fontFamily: "inherit", fontSize: 11, fontWeight: 500,
-                  border: lang === key ? "1px solid #a5b4fc" : "1px solid rgba(255,255,255,0.2)",
-                  background: lang === key ? "rgba(99,102,241,0.15)" : "transparent",
-                  color: lang === key ? "#a5b4fc" : "rgba(255,255,255,0.55)",
-                  transition: "all 0.15s",
-                }}
-                title={l.name}
-              >
-                {l.flag} {l.label}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* PAGE TITLE */}
+      <div className="page-title">
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111", letterSpacing: "-0.02em" }}>
+          {t('appTitle')}
+        </h1>
+        <p style={{ margin: "4px 0 0", fontSize: 11, color: "#999", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          {L.householdDesc(household, L.ageRanges)} · {weekLabel}
+        </p>
       </div>
 
       {genError && (
@@ -1245,7 +1280,7 @@ Omit empty categories.`;
       )}
 
       {/* PROGRESS BAR */}
-      <div style={{ background: "#fff", borderBottom: "1px solid #e5e5e5", padding: "8px 32px" }}>
+      <div className="progress-bar-wrap">
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ flex: 1, height: 2, background: "#e5e5e5", borderRadius: 99, overflow: "hidden" }}>
             <div style={{
@@ -1254,12 +1289,12 @@ Omit empty categories.`;
             }} />
           </div>
           <span style={{ fontSize: 11, color: "#999", whiteSpace: "nowrap" }}>
-            {t.mealCount(filledCount, totalSlots)}
+            {t('mealCount', filledCount, totalSlots)}
           </span>
         </div>
       </div>
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px 48px" }}>
+      <div className="main-pad">
 
         {/* HOUSEHOLD SETTINGS */}
         {tab === "household" && (
@@ -1283,6 +1318,23 @@ Omit empty categories.`;
             <Settings config={config} onSave={c => { setConfig(c); setTab("plan"); }} t={t} />
           </div>
         )}
+
+        {/* MOBILE GENERATE */}
+        <div className="mobile-generate">
+          <button
+            style={{
+              flex: 1, padding: "12px", borderRadius: 8, border: "none",
+              background: "#6366f1", color: "#fff", fontSize: 14, fontWeight: 600,
+              fontFamily: "inherit", cursor: "pointer", opacity: genLoading ? 0.6 : 1,
+            }}
+            onClick={generateMeals}
+            disabled={genLoading}
+          >
+            {genLoading
+              ? <span style={{ display: "inline-block", animation: "spin 0.8s linear infinite" }}>⟳</span>
+              : `✦ ${t('generateBtn')}`}
+          </button>
+        </div>
 
         {/* DAY TABS */}
         <div style={{ display: "flex", gap: 4, marginBottom: 16, overflowX: "auto", paddingBottom: 2 }}>
@@ -1319,18 +1371,18 @@ Omit empty categories.`;
               }}>
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 20, fontWeight: 600 }}>{L.days[i]}</span>
                 <span style={{ fontSize: 11, color: "#999" }}>
-                  {t.mealCount(slots.filter(tp => meals[day][tp]).length, slots.length)}
+                  {t('mealCount', slots.filter(tp => meals[day][tp]).length, slots.length)}
                 </span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: slots.length === 1 ? "1fr" : "1fr 1fr", gap: 16, padding: 20 }}>
+              <div className="day-grid" style={{ gridTemplateColumns: slots.length === 1 ? "1fr" : "1fr 1fr" }}>
                 {slots.map(type => {
                   const k = `${day}-${type}`;
                   const dietType = vegeFlags[k]; // "vege" | "vegan" | undefined(=meat)
                   const dietStyle = dietType === "vegan"
-                    ? { border: "1px solid #6ee7b7", bg: "#ecfdf5", color: "#065f46", label: t.veganLabel }
+                    ? { border: "1px solid #6ee7b7", bg: "#ecfdf5", color: "#065f46", label: t('veganLabel') }
                     : dietType === "vege"
-                    ? { border: "1px solid #bbf7d0", bg: "#f0fdf4", color: "#166534", label: t.vegeLabel }
-                    : { border: "1px solid #fde68a", bg: "#fffbeb", color: "#92400e", label: t.meatLabel };
+                    ? { border: "1px solid #bbf7d0", bg: "#f0fdf4", color: "#166534", label: t('vegeLabel') }
+                    : { border: "1px solid #fde68a", bg: "#fffbeb", color: "#92400e", label: t('meatLabel') };
                   return (
                     <div key={type}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -1359,7 +1411,7 @@ Omit empty categories.`;
                                 color: "#666", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                               }}
                             >
-                              {t.recipeBtn}
+                              {t('recipeBtn')}
                             </button>
                           </div>
                         )}
@@ -1381,13 +1433,13 @@ Omit empty categories.`;
         {/* WEEKLY OVERVIEW TABLE */}
         <div style={{ ...S.card, marginTop: 20 }}>
           <div style={{ padding: "12px 16px", borderBottom: "1px solid #f0f0f0" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666" }}>{t.weekOverview}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666" }}>{t('weekOverview')}</span>
           </div>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
               <thead>
                 <tr style={{ background: "#fafafa" }}>
-                  <th style={{ padding: "8px 14px", textAlign: "left", color: "#999", fontWeight: 700, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", width: 80 }}>{t.mealHeader}</th>
+                  <th style={{ padding: "8px 14px", textAlign: "left", color: "#999", fontWeight: 700, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", width: 80 }}>{t('mealHeader')}</th>
                   {DAYS.map((d, i) => (
                     <th key={d} style={{
                       padding: "8px 8px", textAlign: "center", color: activeDay === i ? "#111" : "#999",
@@ -1445,13 +1497,35 @@ Omit empty categories.`;
           const onTarget = Math.abs(nonMeatPct - targetVegePct) <= 10;
           return (
             <div style={{ marginTop: 12, fontSize: 12, color: "#999", display: "flex", flexDirection: "column", gap: 4 }}>
-              <span>{t.vegeStats(veganCount, vegeCount, filledCount)}</span>
+              <span>{t('vegeStats', veganCount, vegeCount, filledCount)}</span>
               <span style={{ color: onTarget ? "#166534" : "#92400e" }}>
-                {t.vegeStatsTarget(dietPrefs)} {onTarget ? "✓" : ""}
+                {t('vegeStatsTarget', dietPrefs)} {onTarget ? "✓" : ""}
               </span>
             </div>
           );
         })()}
+
+        {/* SHOPPING BUTTON */}
+        <div style={{ marginTop: 24, display: "flex", justifyContent: "center" }}>
+          <button
+            style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "10px 24px", borderRadius: 8, border: "none",
+              background: filledCount === 0 ? "#e5e5e5" : "#22c55e",
+              color: filledCount === 0 ? "#999" : "#fff",
+              fontSize: 13, fontWeight: 600, fontFamily: "inherit",
+              cursor: filledCount === 0 ? "not-allowed" : "pointer",
+              transition: "background 0.15s",
+            }}
+            onClick={generateShopping}
+            disabled={filledCount === 0 || listLoading}
+          >
+            {listLoading
+              ? <span style={{ display: "inline-block", animation: "spin 0.8s linear infinite" }}>⟳</span>
+              : "🛒"}
+            {listLoading ? ` ${t('generating')}` : ` ${t('shoppingBtn')}`}
+          </button>
+        </div>
       </div>
 
       {/* MODALS */}
