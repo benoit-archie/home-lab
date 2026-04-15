@@ -7,6 +7,22 @@ const NO_LUNCH = ["Mardi", "Mercredi", "Jeudi", "Vendredi"];
 const hasMeal = (day, type) => !(type === "Déjeuner" && NO_LUNCH.includes(day));
 const initMeals = () => Object.fromEntries(DAYS.map(d => [d, { Déjeuner: "", Dîner: "" }]));
 
+const AGE_RANGES = [
+  { value: "0-3",   label: "0–3 ans"   },
+  { value: "4-10",  label: "4–10 ans"  },
+  { value: "11-17", label: "11–17 ans" },
+];
+const defaultHousehold = { adults: 2, children: [{ age: "4-10" }, { age: "4-10" }] };
+
+function householdDesc({ adults, children }) {
+  if (children.length === 0)
+    return `${adults} adulte${adults > 1 ? "s" : ""}`;
+  const groups = AGE_RANGES
+    .map(r => { const n = children.filter(c => c.age === r.value).length; return n ? `${n} enfant${n > 1 ? "s" : ""} ${r.label}` : null; })
+    .filter(Boolean).join(", ");
+  return `${adults} adulte${adults > 1 ? "s" : ""}, ${children.length} enfant${children.length > 1 ? "s" : ""} (${groups})`;
+}
+
 // ─── VIKUNJA API ──────────────────────────────────────────────────────────────
 async function vikunjaFetch(baseUrl, token, path, method = "GET", body = null) {
   const res = await fetch(`${baseUrl}/api/v1${path}`, {
@@ -203,6 +219,79 @@ function Settings({ config, onSave }) {
   );
 }
 
+// ─── HOUSEHOLD SETTINGS ───────────────────────────────────────────────────────
+function HouseholdSettings({ household, onChange }) {
+  const { adults, children } = household;
+
+  const setAdults = n => onChange({ ...household, adults: Math.min(8, Math.max(1, n)) });
+  const setChildCount = n => {
+    const count = Math.min(8, Math.max(0, n));
+    const next = Array.from({ length: count }, (_, i) => children[i] || { age: "4-10" });
+    onChange({ ...household, children: next });
+  };
+  const setChildAge = (i, age) =>
+    onChange({ ...household, children: children.map((c, j) => j === i ? { ...c, age } : c) });
+
+  const stepBtn = (disabled) => ({
+    width: 32, height: 32, borderRadius: 8, border: "1.5px solid #e8e4dc",
+    background: disabled ? "#f0ece4" : "#fafaf8", cursor: disabled ? "default" : "pointer",
+    fontSize: 18, fontFamily: "inherit", color: disabled ? "#c4bfb5" : "#1a1a18",
+    fontWeight: 600, lineHeight: "30px", textAlign: "center", padding: 0,
+  });
+
+  const Stepper = ({ value, onDec, onInc, min, max }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <button style={stepBtn(value <= min)} onClick={onDec} disabled={value <= min}>−</button>
+      <span style={{ fontSize: 22, fontWeight: 700, minWidth: 24, textAlign: "center" }}>{value}</span>
+      <button style={stepBtn(value >= max)} onClick={onInc} disabled={value >= max}>+</button>
+    </div>
+  );
+
+  const labelStyle = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#5a5a52", marginBottom: 10 };
+
+  return (
+    <div style={{ padding: 24 }}>
+      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>Composition du foyer</h3>
+
+      <div style={{ marginBottom: 24 }}>
+        <label style={labelStyle}>Adultes</label>
+        <Stepper value={adults} min={1} max={8} onDec={() => setAdults(adults - 1)} onInc={() => setAdults(adults + 1)} />
+      </div>
+
+      <div style={{ marginBottom: children.length > 0 ? 16 : 0 }}>
+        <label style={labelStyle}>Enfants</label>
+        <Stepper value={children.length} min={0} max={8} onDec={() => setChildCount(children.length - 1)} onInc={() => setChildCount(children.length + 1)} />
+      </div>
+
+      {children.length > 0 && (
+        <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+          {children.map((child, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 12, color: "#5a5a52", minWidth: 68, fontWeight: 600 }}>Enfant {i + 1}</span>
+              <div style={{ display: "flex", gap: 6 }}>
+                {AGE_RANGES.map(r => (
+                  <button key={r.value} onClick={() => setChildAge(i, r.value)} style={{
+                    padding: "5px 10px", borderRadius: 8, cursor: "pointer",
+                    fontSize: 11, fontWeight: 600, fontFamily: "inherit",
+                    border: `1.5px solid ${child.age === r.value ? "#3d9970" : "#e8e4dc"}`,
+                    background: child.age === r.value ? "#f0fdf4" : "#fafaf8",
+                    color: child.age === r.value ? "#166534" : "#5a5a52",
+                    transition: "all 0.15s",
+                  }}>{r.label}</button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ marginTop: 20, padding: "10px 14px", borderRadius: 8, background: "#f7f4ef", fontSize: 12, color: "#5a5a52" }}>
+        {adults + children.length} personne{adults + children.length > 1 ? "s" : ""} au total · {householdDesc({ adults, children })}
+      </div>
+    </div>
+  );
+}
+
 // ─── MEAL CELL ────────────────────────────────────────────────────────────────
 function MealCell({ value, onChange, isVege }) {
   const [editing, setEditing] = useState(false);
@@ -386,7 +475,15 @@ export default function App() {
   const [meals, setMeals] = useState(initMeals);
   const [vegeFlags, setVegeFlags] = useState({}); // { "Lundi-Dîner": true, ... }
   const [config, setConfig] = useState({ baseUrl: "", token: "", projectId: "", projectName: "" });
-  const [tab, setTab] = useState("plan"); // plan | settings
+  const [household, setHousehold] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("meal-planner-household")) || defaultHousehold; }
+    catch { return defaultHousehold; }
+  });
+  const [tab, setTab] = useState("plan"); // plan | settings | household
+
+  useEffect(() => {
+    localStorage.setItem("meal-planner-household", JSON.stringify(household));
+  }, [household]);
   const [activeDay, setActiveDay] = useState(0);
   const [genLoading, setGenLoading] = useState(false);
   const [genError, setGenError] = useState(null);
@@ -416,8 +513,9 @@ export default function App() {
     const slots = DAYS.flatMap(d =>
       ["Déjeuner", "Dîner"].filter(t => hasMeal(d, t)).map(t => `${d} ${t}`)
     );
-    const prompt = `Planning repas famille 4 personnes (2 adultes, 2 enfants) pour une semaine.
-Critères : healthy, équilibré, ~50% végétarien. Savoureux, accessible, varié.
+    const hDesc = householdDesc(household);
+    const prompt = `Planning repas pour une famille de ${household.adults + household.children.length} personnes (${hDesc}) pour une semaine.
+Critères : healthy, équilibré, ~50% végétarien. Adapte les plats et portions à la composition du foyer. Savoureux, accessible, varié.
 
 Slots : ${slots.join(", ")}
 
@@ -441,7 +539,7 @@ Noms courts (max 5 mots), en français. Le champ "vege" liste les clés "Jour-Re
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "mistral",
+          model: "llama3.2:3b",
           prompt,
           stream: false,
         }),
@@ -474,10 +572,13 @@ Noms courts (max 5 mots), en français. Le champ "vege" liste les clés "Jour-Re
         .map(t => `${d} ${t}: ${meals[d][t]}`).join("\n")
     ).filter(Boolean).join("\n");
 
-    const prompt = `Famille 4 personnes. Voici les repas de la semaine :
+    const hDesc = householdDesc(household);
+    const total = household.adults + household.children.length;
+    const prompt = `Famille de ${total} personnes (${hDesc}). Voici les repas de la semaine :
 ${mealSummary}
 
 Génère une liste de courses complète, organisée par catégorie.
+Adapte les quantités à la composition exacte du foyer.
 Réponds UNIQUEMENT en JSON strict sans backticks :
 {
   "categories": [
@@ -490,14 +591,14 @@ Réponds UNIQUEMENT en JSON strict sans backticks :
     { "name": "Boissons & divers", "emoji": "🧴", "items": [] }
   ]
 }
-Quantités réalistes pour 4 personnes. Omets les catégories vides.`;
+Omets les catégories vides.`;
 
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "mistral",
+          model: "llama3.2:3b",
           prompt,
           stream: false,
         }),
@@ -532,7 +633,7 @@ Quantités réalistes pour 4 personnes. Omets les catégories vides.`;
         <div>
           <h1 style={S.logo}>Menu de la semaine</h1>
           <p style={{ ...S.sub, color: "#8a8a7e" }}>
-            Famille · 4 personnes · {weekLabel}
+            {householdDesc(household)} · {weekLabel}
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -557,6 +658,12 @@ Quantités réalistes pour 4 personnes. Omets les catégories vides.`;
             disabled={filledCount === 0 || listLoading}
           >
             {listLoading ? "⟳ Génération…" : "🛒 Liste de courses"}
+          </button>
+          <button
+            style={{ ...S.btn(), borderColor: tab === "household" ? "#e8c547" : undefined, color: tab === "household" ? "#e8c547" : undefined }}
+            onClick={() => setTab(t => t === "household" ? "plan" : "household")}
+          >
+            👨‍👩‍👧 Paramètres
           </button>
           <button
             style={{ ...S.btn(), borderColor: tab === "settings" ? "#e8c547" : undefined, color: tab === "settings" ? "#e8c547" : undefined }}
@@ -588,7 +695,14 @@ Quantités réalistes pour 4 personnes. Omets les catégories vides.`;
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px 48px" }}>
 
-        {/* SETTINGS */}
+        {/* HOUSEHOLD SETTINGS */}
+        {tab === "household" && (
+          <div style={{ ...S.card, marginBottom: 24, animation: "fadeIn 0.2s ease" }}>
+            <HouseholdSettings household={household} onChange={h => { setHousehold(h); }} />
+          </div>
+        )}
+
+        {/* VIKUNJA SETTINGS */}
         {tab === "settings" && (
           <div style={{ ...S.card, marginBottom: 24, animation: "fadeIn 0.2s ease" }}>
             <Settings config={config} onSave={c => { setConfig(c); setTab("plan"); }} />
